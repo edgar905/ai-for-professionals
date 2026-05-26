@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI for Professionals - 4-Week Intensive Workshop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#07070a',
+            surface: '#0f1014',
+            elevated: '#16171d',
+            floating: '#1e2028',
+            accent: '#c9a84c',
+            'accent-light': '#e8d48a',
+            'accent-dim': '#8b7433',
+            cream: '#f0ebe0',
+            'cream-muted': '#c4bfb4',
+            warm: '#2a2520',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            body: ['"Outfit"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #07070a;
+      color: #f0ebe0;
+      font-family: 'Outfit', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Typography */
+    .heading-display {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+    }
+    .body-text {
+      font-family: 'Outfit', system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    /* Gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      will-change: transform;
+    }
+    .orb-gold { background: radial-gradient(circle, rgba(201,168,76,0.22) 0%, transparent 70%); }
+    .orb-warm { background: radial-gradient(circle, rgba(180,120,60,0.15) 0%, transparent 70%); }
+    .orb-blue { background: radial-gradient(circle, rgba(60,80,160,0.12) 0%, transparent 70%); }
+
+    /* Layered shadows */
+    .shadow-layered {
+      box-shadow:
+        0 1px 2px rgba(201,168,76,0.04),
+        0 4px 8px rgba(0,0,0,0.3),
+        0 16px 32px rgba(0,0,0,0.4),
+        0 32px 64px rgba(0,0,0,0.2);
+    }
+    .shadow-card {
+      box-shadow:
+        0 2px 4px rgba(201,168,76,0.03),
+        0 8px 16px rgba(0,0,0,0.25),
+        0 24px 48px rgba(0,0,0,0.15);
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #c9a84c 0%, #a8873a 100%);
+      color: #07070a;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 18px 48px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.3), 0 2px 8px rgba(201,168,76,0.2);
+    }
+    .btn-primary:hover::before { left: 100%; }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-primary:focus-visible {
+      outline: 2px solid #e8d48a;
+      outline-offset: 4px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #c9a84c;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      padding: 16px 40px;
+      border: 1px solid rgba(201,168,76,0.3);
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, background 0.3s ease;
+    }
+    .btn-secondary:hover {
+      border-color: #c9a84c;
+      background: rgba(201,168,76,0.06);
+      transform: translateY(-1px);
+    }
+    .btn-secondary:active { transform: translateY(0); }
+    .btn-secondary:focus-visible {
+      outline: 2px solid #e8d48a;
+      outline-offset: 4px;
+    }
+
+    /* Section label */
+    .section-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #c9a84c;
+      opacity: 0.85;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, #c9a84c, transparent);
+    }
+
+    /* Curriculum card */
+    .week-card {
+      background: linear-gradient(135deg, #13141a 0%, #1a1b23 100%);
+      border: 1px solid rgba(201,168,76,0.12);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease;
+    }
+    .week-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .week-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201,168,76,0.2);
+    }
+    .week-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .week-card:hover::before { opacity: 1; }
+
+    /* Week number */
+    .week-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 6rem;
+      font-weight: 300;
+      line-height: 1;
+      color: rgba(201,168,76,0.1);
+      position: absolute;
+      top: -10px;
+      right: 20px;
+    }
+
+    /* Stats counter */
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: #c9a84c;
+      line-height: 1;
+    }
+    .stat-suffix {
+      font-size: 2rem;
+      font-weight: 400;
+      color: #e8d48a;
+      margin-left: 2px;
+    }
+    .stat-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #c4bfb4;
+      margin-top: 8px;
+    }
+
+    /* Testimonial */
+    .testimonial-card {
+      background: linear-gradient(160deg, #13141a 0%, #1a1b23 100%);
+      border: 1px solid rgba(201,168,76,0.12);
+    }
+
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      cursor: pointer;
+    }
+    .faq-item:hover .faq-question { color: #c9a84c; }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .faq-item.active .faq-answer { max-height: 300px; }
+    .faq-item.active .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform 0.3s ease; }
+
+    /* Marquee */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      animation: marquee 30s linear infinite;
+    }
+
+    /* Glow line */
+    .glow-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #c9a84c 20%, #e8d48a 50%, #c9a84c 80%, transparent 100%);
+      opacity: 0.5;
+    }
+
+    /* Hide scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #07070a; }
+    ::-webkit-scrollbar-thumb { background: #2a2520; border-radius: 3px; }
+
+    /* Animated gradient border for pricing */
+    .pricing-border {
+      background: linear-gradient(135deg, #c9a84c, #8b7433, #c9a84c, #e8d48a, #c9a84c);
+      background-size: 400% 400%;
+      animation: gradientShift 6s ease infinite;
+      padding: 1px;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
+      <a href="https://onegiantleap.ai/" class="font-display text-2xl font-semibold tracking-tight text-cream hover:text-accent transition-colors duration-300">
+        AI<span class="text-accent">Pro</span>
+      </a>
+      <div class="hidden md:flex items-center gap-10">
+        <a href="#curriculum" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Curriculum</a>
+        <a href="#results" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Results</a>
+        <a href="#pricing" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Pricing</a>
+        <a href="#faq" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">FAQ</a>
+      </div>
+      <a href="#pricing" class="btn-primary text-xs py-3 px-6 tracking-widest">View Pricing</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
+    <!-- Background effects -->
+    <div class="orb orb-gold w-[700px] h-[700px] -top-60 -right-60"></div>
+    <div class="orb orb-warm w-[600px] h-[600px] bottom-0 -left-32"></div>
+    <div class="orb orb-blue w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+    <!-- Grid pattern -->
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px); background-size: 80px 80px;"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center max-w-5xl mx-auto px-6 pt-24">
+      <div class="section-label mb-6">4-Week Intensive Workshop</div>
+
+      <h1 class="heading-display text-5xl md:text-7xl lg:text-8xl font-semibold text-cream mb-6">
+        Master AI.<br>
+        <span class="text-accent italic font-medium">Transform</span> Your Career.
+      </h1>
+
+      <p class="body-text text-base md:text-lg text-cream-muted max-w-2xl mx-auto mb-10" style="line-height: 1.8;">
+        In 28 days, go from curious about AI to confidently building automations, workflows, and tools that make your colleagues wonder what changed.
+      </p>
+
+      <!-- Countdown Timer -->
+      <div class="mb-10">
+        <div class="text-cream-muted text-xs tracking-[0.2em] uppercase font-body mb-4 opacity-70">First class begins</div>
+        <div class="flex justify-center gap-4 sm:gap-5" id="countdown">
+          <div class="text-center">
+            <div class="heading-display text-3xl md:text-4xl font-semibold text-cream" id="cd-days">--</div>
+            <div class="stat-label mt-1">Days</div>
+          </div>
+          <div class="heading-display text-3xl md:text-4xl font-light text-accent/30">:</div>
+          <div class="text-center">
+            <div class="heading-display text-3xl md:text-4xl font-semibold text-cream" id="cd-hours">--</div>
+            <div class="stat-label mt-1">Hours</div>
+          </div>
+          <div class="heading-display text-3xl md:text-4xl font-light text-accent/30">:</div>
+          <div class="text-center">
+            <div class="heading-display text-3xl md:text-4xl font-semibold text-cream" id="cd-mins">--</div>
+            <div class="stat-label mt-1">Minutes</div>
+          </div>
+          <div class="heading-display text-3xl md:text-4xl font-light text-accent/30">:</div>
+          <div class="text-center">
+            <div class="heading-display text-3xl md:text-4xl font-semibold text-cream" id="cd-secs">--</div>
+            <div class="stat-label mt-1">Seconds</div>
+          </div>
+        </div>
+        <div class="text-accent/60 text-xs tracking-[0.15em] uppercase font-body mt-4">June 3, 2026 &middot; 9:00 AM</div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <a href="#pricing" class="btn-primary text-sm tracking-widest">Reserve Your Seat</a>
+        <a href="#curriculum" class="btn-secondary text-sm">View Curriculum</a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator (line only) -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
+      <div class="w-px h-12 bg-gradient-to-b from-accent to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE ===== -->
+  <div class="py-6 border-y border-accent/10 overflow-hidden">
+    <div class="marquee-track flex items-center whitespace-nowrap">
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">AI Fundamentals</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">Automation Frameworks</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">n8n Workflows</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">AI-Assisted Development</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">AI Fundamentals</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">Automation Frameworks</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">n8n Workflows</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+      <span class="heading-display text-[8vw] md:text-[5vw] font-light text-accent/20 uppercase tracking-[0.1em] mx-8">AI-Assisted Development</span>
+      <span class="text-accent/20 mx-4">&bull;</span>
+    </div>
+  </div>
+
+  <!-- ===== PROBLEM SECTION ===== -->
+  <section class="relative py-32 md:py-44 overflow-hidden">
+    <div class="orb orb-warm w-[400px] h-[400px] top-20 -left-20"></div>
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+        <div>
+          <div class="section-label mb-6">001 / The Reality</div>
+          <h2 class="heading-display text-4xl md:text-6xl font-semibold text-cream mb-8">
+            You know AI is<br>changing everything.
+          </h2>
+          <div class="divider mb-8"></div>
+          <div class="space-y-6 body-text text-cream-muted">
+            <p>
+              Your inbox is full of AI tools you haven't tried. Your competitors are shipping faster. Your team asks questions you can't answer. And that quiet voice keeps getting louder: <em class="text-cream italic">"Am I falling behind?"</em>
+            </p>
+            <p>
+              You've watched the tutorials. Read the articles. Maybe even played with ChatGPT a few times. But there's a canyon between "I've used AI" and "I've built real systems that save me 20 hours a week."
+            </p>
+            <p>
+              You don't need another overview. You need an <span class="text-accent font-medium">AI Operating System</span>.
+            </p>
+          </div>
+        </div>
+        <div class="relative">
+          <!-- Visual: AI Adoption S-Curve -->
+          <div class="aspect-square relative rounded-sm overflow-hidden shadow-layered" id="adoption-curve-container">
+            <div class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-midnight"></div>
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 40%, rgba(201,168,76,0.15) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(100,120,200,0.08) 0%, transparent 50%);"></div>
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Gridlines -->
+              <line x1="60" y1="340" x2="370" y2="340" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+              <line x1="60" y1="270" x2="370" y2="270" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+              <line x1="60" y1="200" x2="370" y2="200" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+              <line x1="60" y1="130" x2="370" y2="130" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+              <line x1="60" y1="60" x2="370" y2="60" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+              <!-- Vertical gridlines -->
+              <line x1="60" y1="55" x2="60" y2="345" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+              <line x1="122" y1="55" x2="122" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+              <line x1="184" y1="55" x2="184" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+              <line x1="246" y1="55" x2="246" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+              <line x1="308" y1="55" x2="308" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+              <line x1="370" y1="55" x2="370" y2="345" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+
+              <!-- Y-axis labels -->
+              <text x="52" y="344" text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">0%</text>
+              <text x="52" y="204" text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">50%</text>
+              <text x="52" y="64" text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">100%</text>
+
+              <!-- X-axis year labels -->
+              <text x="60" y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2022</text>
+              <text x="122" y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2023</text>
+              <text x="184" y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2024</text>
+              <text x="246" y="360" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="9" font-family="Outfit" font-weight="600">2025</text>
+              <text x="308" y="360" text-anchor="middle" fill="rgba(201,168,76,0.3)" font-size="9" font-family="Outfit">2026</text>
+              <text x="370" y="360" text-anchor="middle" fill="rgba(201,168,76,0.25)" font-size="9" font-family="Outfit">2027</text>
+
+              <!-- Zone shading: "The Window" highlight -->
+              <rect x="215" y="55" width="62" height="290" fill="rgba(201,168,76,0.04)" rx="2"/>
+
+              <!-- S-Curve path (enterprise AI adoption) -->
+              <!-- Points: 2022=30%, 2023=55%, 2024=78%, 2025=88%, 2026=94%, 2027=97% -->
+              <!-- Y mapping: 0%=340, 100%=60 → value * 2.8 subtracted from 340 -->
+              <path id="adoption-curve" d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63" stroke="rgba(201,168,76,0.7)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Glow duplicate of curve -->
+              <path d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63" stroke="rgba(201,168,76,0.15)" stroke-width="8" fill="none" stroke-linecap="round" filter="blur(4px)"/>
+
+              <!-- Fill under curve -->
+              <path d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63 L370,340 L60,340 Z" fill="url(#curveFill)"/>
+              <defs>
+                <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(201,168,76,0.12)"/>
+                  <stop offset="100%" stop-color="rgba(201,168,76,0.01)"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Data points -->
+              <g id="curve-data-points">
+                <!-- 2023: 55% -->
+                <circle cx="122" cy="186" r="4" fill="rgba(201,168,76,0.8)" stroke="rgba(201,168,76,0.3)" stroke-width="1" class="curve-point" opacity="0"/>
+                <text x="122" y="175" text-anchor="middle" fill="rgba(240,235,224,0.7)" font-size="11" font-weight="600" font-family="Outfit" class="curve-label" opacity="0">55%</text>
+
+                <!-- 2024: 78% -->
+                <circle cx="184" cy="122" r="4" fill="rgba(201,168,76,0.8)" stroke="rgba(201,168,76,0.3)" stroke-width="1" class="curve-point" opacity="0"/>
+                <text x="184" y="111" text-anchor="middle" fill="rgba(240,235,224,0.7)" font-size="11" font-weight="600" font-family="Outfit" class="curve-label" opacity="0">78%</text>
+
+                <!-- 2026: 94% (projected) -->
+                <circle cx="308" cy="70" r="4" fill="rgba(201,168,76,0.5)" stroke="rgba(201,168,76,0.2)" stroke-width="1" class="curve-point" opacity="0"/>
+                <text x="308" y="59" text-anchor="middle" fill="rgba(240,235,224,0.45)" font-size="10" font-family="Outfit" class="curve-label" opacity="0">~95%</text>
+              </g>
+
+              <!-- "You Are Here" marker at 2025 -->
+              <g id="you-are-here" opacity="0">
+                <circle cx="246" cy="87" r="7" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.8)" stroke-width="1.5" class="pulse-ring"/>
+                <circle cx="246" cy="87" r="3.5" fill="rgba(201,168,76,1)"/>
+                <!-- Callout line -->
+                <line x1="246" y1="95" x2="246" y2="125" stroke="rgba(201,168,76,0.4)" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="246" y="140" text-anchor="middle" fill="rgba(201,168,76,0.9)" font-size="9" font-weight="600" font-family="Outfit" letter-spacing="0.12em">YOU ARE HERE</text>
+              </g>
+
+              <!-- Zone labels -->
+              <g id="zone-labels" opacity="0">
+                <text x="90" y="44" text-anchor="middle" fill="rgba(201,168,76,0.25)" font-size="8" font-family="Outfit" letter-spacing="0.1em">EARLY ADOPTERS</text>
+                <text x="246" y="44" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-size="8" font-weight="600" font-family="Outfit" letter-spacing="0.15em">THE WINDOW</text>
+                <text x="350" y="44" text-anchor="middle" fill="rgba(201,168,76,0.18)" font-size="8" font-family="Outfit" letter-spacing="0.1em">TOO LATE</text>
+              </g>
+            </svg>
+            <!-- Pulsing animation for You Are Here dot -->
+            <style>
+              @keyframes pulse-dot {
+                0%, 100% { transform: scale(1); opacity: 0.2; }
+                50% { transform: scale(2.2); opacity: 0; }
+              }
+              .pulse-ring {
+                transform-origin: center;
+                animation: pulse-dot 2.5s ease-out infinite;
+              }
+            </style>
+            <!-- Caption & source -->
+            <div class="absolute bottom-4 left-5 right-5 flex justify-between items-end">
+              <span class="text-accent/50 text-xs tracking-[0.2em] uppercase font-body">The adoption curve waits for no one.</span>
+              <span class="text-cream-muted/20 font-body" style="font-size: 7px; letter-spacing: 0.05em;">McKinsey, BCG, Gartner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GLOW LINE ===== -->
+  <div class="glow-line max-w-4xl mx-auto"></div>
+
+  <!-- ===== TRANSFORMATION / SOLUTION ===== -->
+  <section class="relative py-32 md:py-44 overflow-hidden">
+    <div class="orb orb-gold w-[500px] h-[500px] -top-20 right-0"></div>
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+        <!-- Visual first on desktop (right side) -->
+        <div class="relative order-2 md:order-1">
+          <div class="aspect-square relative rounded-sm overflow-hidden shadow-layered">
+            <div class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-midnight"></div>
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 50% 50%, rgba(201,168,76,0.2) 0%, transparent 60%), radial-gradient(circle at 30% 70%, rgba(201,168,76,0.1) 0%, transparent 40%);"></div>
+            <!-- Clean organized workflow -->
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400" fill="none">
+              <!-- Flow lines -->
+              <path d="M60 200 L140 200" stroke="rgba(201,168,76,0.35)" stroke-width="1.5"/>
+              <path d="M260 200 L340 200" stroke="rgba(201,168,76,0.35)" stroke-width="1.5"/>
+              <path d="M200 60 L200 140" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+              <path d="M200 260 L200 340" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+              <!-- Blocks -->
+              <rect x="70" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+              <rect x="170" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.6)" stroke-width="2" fill="rgba(201,168,76,0.1)"/>
+              <rect x="270" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+              <rect x="170" y="80" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.25)" stroke-width="1" fill="rgba(201,168,76,0.04)"/>
+              <rect x="170" y="260" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.25)" stroke-width="1" fill="rgba(201,168,76,0.04)"/>
+              <!-- Arrows -->
+              <polygon points="148,200 142,196 142,204" fill="rgba(201,168,76,0.5)"/>
+              <polygon points="262,200 256,196 256,204" fill="rgba(201,168,76,0.5)"/>
+              <polygon points="200,148 196,142 204,142" fill="rgba(201,168,76,0.35)"/>
+              <polygon points="200,262 196,268 204,268" fill="rgba(201,168,76,0.35)"/>
+              <!-- Center icon - glowing -->
+              <circle cx="200" cy="200" r="18" stroke="rgba(201,168,76,0.7)" stroke-width="2" fill="rgba(201,168,76,0.12)"/>
+              <path d="M193 200 L200 191 L207 200 L200 209 Z" fill="rgba(201,168,76,0.6)"/>
+              <!-- Labels inside blocks -->
+              <text x="100" y="205" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-size="10" font-family="Outfit">IN</text>
+              <text x="300" y="205" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-size="10" font-family="Outfit">OUT</text>
+              <text x="200" y="115" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="9" font-family="Outfit">API</text>
+              <text x="200" y="295" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="9" font-family="Outfit">DATA</text>
+              <text x="200" y="204" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-size="10" font-weight="600" font-family="Outfit">AI</text>
+            </svg>
+            <div class="absolute bottom-6 left-6 right-6 text-right">
+              <span class="text-accent/50 text-xs tracking-[0.2em] uppercase font-body">Systematic. Repeatable. Yours.</span>
+            </div>
+          </div>
+        </div>
+        <div class="order-1 md:order-2">
+          <div class="section-label mb-6">002 / The Transformation</div>
+          <h2 class="heading-display text-4xl md:text-6xl font-semibold text-cream mb-8">
+            From curious to<br><span class="text-accent italic">capable</span> in 28 days.
+          </h2>
+          <div class="divider mb-8"></div>
+          <div class="space-y-6 body-text text-cream-muted">
+            <p>
+              <strong class="text-cream">AI for Professionals</strong> is a 4-week intensive workshop designed for people who are done watching from the sidelines. You won't just learn what AI can do. You'll build the automations, workflows, and tools that put you months ahead of everyone still Googling "how to use ChatGPT."
+            </p>
+            <p>
+              By the end of week four, you'll have a portfolio of real automations running in your work. Not hypothetical. Not theoretical. <span class="text-accent font-medium">Deployed and saving you hours every single week.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CURRICULUM ===== -->
+  <section class="relative py-32 md:py-44 overflow-hidden" id="curriculum" style="background: linear-gradient(180deg, #0d0e13 0%, #111219 50%, #0d0e13 100%);">
+    <div class="orb orb-blue w-[600px] h-[600px] top-1/3 -right-32"></div>
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="text-center mb-20">
+        <div class="section-label mb-6">003 / The Curriculum</div>
+        <h2 class="heading-display text-4xl md:text-7xl font-semibold text-cream mb-6">
+          Four weeks that change<br>how you <span class="text-accent italic">work</span>.
+        </h2>
+        <p class="body-text text-cream-muted max-w-2xl mx-auto">
+          Each week builds on the last. By the end, you won't just understand AI. You'll have built systems that work while you sleep.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Week 1 -->
+        <div class="week-card p-8 md:p-10 rounded-sm">
+          <span class="week-num">01</span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              </div>
+              <span class="section-label text-accent/60">Week One</span>
+            </div>
+            <h3 class="heading-display text-2xl md:text-3xl font-semibold text-cream mb-4">AI Fundamentals & Best Practices</h3>
+            <p class="body-text text-cream-muted text-sm mb-6">
+              Stop guessing. Learn how AI actually thinks, when to use which model, and the prompting frameworks that separate amateurs from professionals. You'll develop an intuition for AI that guides every decision after.
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Mental models for choosing the right AI tool for every task</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Advanced prompting: chain-of-thought, system prompts, few-shot patterns</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Ethical guardrails and responsible implementation at work</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Week 2 -->
+        <div class="week-card p-8 md:p-10 rounded-sm">
+          <span class="week-num">02</span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+              </div>
+              <span class="section-label text-accent/60">Week Two</span>
+            </div>
+            <h3 class="heading-display text-2xl md:text-3xl font-semibold text-cream mb-4">Frameworks for Automation</h3>
+            <p class="body-text text-cream-muted text-sm mb-6">
+              Learn to see your work through an automation lens. You'll identify the repetitive tasks bleeding hours from your week and design systems that eliminate them permanently.
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>The Automation Audit: mapping every process worth automating</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Decision frameworks: when to automate vs. when to delegate</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Building your first end-to-end automated workflow</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Week 3 -->
+        <div class="week-card p-8 md:p-10 rounded-sm">
+          <span class="week-num">03</span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <span class="section-label text-accent/60">Week Three</span>
+            </div>
+            <h3 class="heading-display text-2xl md:text-3xl font-semibold text-cream mb-4">Mastering n8n for<br>Real-World Automation</h3>
+            <p class="body-text text-cream-muted text-sm mb-6">
+              n8n is the open-source automation engine that connects everything. This week, you go from zero to dangerous, building multi-step workflows that integrate your tools, process data, and run on autopilot.
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Hands-on: connect APIs, databases, and AI models in visual workflows</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Trigger-based automation: email processing, form handling, scheduling</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Error handling, logging, and making workflows bulletproof</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Week 4 -->
+        <div class="week-card p-8 md:p-10 rounded-sm">
+          <span class="week-num">04</span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              </div>
+              <span class="section-label text-accent/60">Week Four</span>
+            </div>
+            <h3 class="heading-display text-2xl md:text-3xl font-semibold text-cream mb-4">AI-Assisted Development</h3>
+            <p class="body-text text-cream-muted text-sm mb-6">
+              The final frontier. Learn to use AI as your development partner to build custom tools, dashboards, and applications, even if you've never written a line of code. This is where everything clicks.
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Build a custom internal tool using AI-assisted coding</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Deploy your creation: from prototype to production in one session</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-1">&#9670;</span>
+                <span>Your personal automation roadmap: what to build next, and how</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS / STATS ===== -->
+  <section class="relative py-32 md:py-40 overflow-hidden" id="results">
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="text-center mb-20">
+        <div class="section-label mb-6">004 / The Results</div>
+        <h2 class="heading-display text-4xl md:text-7xl font-semibold text-cream max-w-4xl mx-auto">
+          What you'll walk away <span class="text-accent italic">with</span>.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-3 gap-8 md:gap-6 mb-24 max-w-3xl mx-auto">
+        <div class="text-center">
+          <div class="stat-number"><span class="counter" data-target="10">0</span></div>
+          <div class="stat-label">Hours Saved Per Week</div>
+        </div>
+        <div class="text-center">
+          <div class="stat-number"><span class="counter" data-target="6">0</span></div>
+          <div class="stat-label">Hours of Live Instruction</div>
+        </div>
+        <div class="text-center">
+          <div class="stat-number">1<span class="stat-suffix">:1</span></div>
+          <div class="stat-label">Office Hour</div>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="text-accent/30 heading-display text-5xl mb-4">&ldquo;</div>
+        <p class="heading-display text-2xl md:text-3xl font-light text-cream/80 italic leading-relaxed">
+          The future is here, it's just not evenly distributed yet.
+        </p>
+        <div class="mt-6 text-cream-muted/50 text-sm tracking-[0.15em] uppercase font-body">William Gibson</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GLOW LINE ===== -->
+  <div class="glow-line max-w-4xl mx-auto"></div>
+
+  <!-- ===== PRICING ===== -->
+  <section class="relative py-32 md:py-44 overflow-hidden" id="pricing">
+    <div class="orb orb-gold w-[700px] h-[700px] top-0 left-1/2 -translate-x-1/2"></div>
+    <div class="max-w-5xl mx-auto px-6 md:px-12">
+      <div class="text-center mb-16">
+        <div class="section-label mb-6">005 / Investment</div>
+        <h2 class="heading-display text-4xl md:text-7xl font-semibold text-cream mb-6">
+          Choose your<br><span class="text-accent italic">level of</span> mastery.
+        </h2>
+        <p class="body-text text-cream-muted max-w-xl mx-auto">
+          Both tiers get the full 4-week curriculum. VIP adds private coaching and advanced skill modules so you go further, faster.
+        </p>
+      </div>
+
+      <!-- Two-column pricing cards -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+
+        <!-- ── Standard ── -->
+        <div class="rounded-sm p-8 md:p-10 flex flex-col" style="background: linear-gradient(135deg, #13141a 0%, #1a1b23 100%); border: 1px solid rgba(201,168,76,0.18);">
+          <div class="mb-8">
+            <div class="section-label mb-3">Standard</div>
+            <div class="heading-display text-5xl md:text-6xl font-bold text-cream mb-1">$100</div>
+            <div class="text-cream-muted text-sm body-text">One-time. Lifetime access to materials.</div>
+          </div>
+
+          <div class="glow-line mb-8"></div>
+
+          <ul class="space-y-4 mb-8 flex-1">
+            <li class="flex items-start gap-3 text-sm text-cream-muted">
+              <span class="text-accent mt-0.5">&#10003;</span>
+              <span>Four 90-Minute Live Sessions</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-cream-muted">
+              <span class="text-accent mt-0.5">&#10003;</span>
+              <span>AI Prompting Framework Library</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-cream-muted">
+              <span class="text-accent mt-0.5">&#10003;</span>
+              <span>Private Community Access (Lifetime)</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-cream-muted">
+              <span class="text-accent mt-0.5">&#10003;</span>
+              <span>Session Recordings &amp; Future Updates</span>
+            </li>
+          </ul>
+
+          <a href="https://buy.stripe.com/dRm9AU7Jo87ibySe8o5c402" class="btn-primary text-sm tracking-widest inline-block w-full py-4 text-center" style="background: linear-gradient(135deg, #8b7433 0%, #6b5828 100%);">Enroll — $100</a>
+        </div>
+
+        <!-- ── VIP ── -->
+        <div class="pricing-border rounded-sm flex flex-col" style="position: relative;">
+          <!-- Most Popular badge -->
+          <div style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #c9a84c, #a8873a); color: #07070a; font-family: 'Outfit', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 16px; white-space: nowrap; z-index: 10;">Most Popular</div>
+          <div class="rounded-sm p-8 md:p-10 flex flex-col h-full" style="background: linear-gradient(135deg, #16171d 0%, #1a1b24 100%);">
+            <div class="mb-8">
+              <div class="section-label mb-3" style="color: #e8d48a;">VIP</div>
+              <div class="heading-display text-5xl md:text-6xl font-bold text-cream mb-1">$250</div>
+              <div class="text-cream-muted text-sm body-text">One-time. Everything in Standard, plus:</div>
+            </div>
+
+            <div class="glow-line mb-8"></div>
+
+            <ul class="space-y-4 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span>Four 90-Minute Live Sessions</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span>AI Prompting Framework Library</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span>Private Community Access (Lifetime)</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream-muted">
+                <span class="text-accent mt-0.5">&#10003;</span>
+                <span>Session Recordings &amp; Future Updates</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream" style="border-top: 1px solid rgba(201,168,76,0.15); padding-top: 1rem; margin-top: 0.5rem;">
+                <span style="color: #e8d48a; margin-top: 0.125rem;">&#9670;</span>
+                <span><strong>1:1 Private Coaching</strong> — 1 dedicated hour with the instructor</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream">
+                <span style="color: #e8d48a; margin-top: 0.125rem;">&#9670;</span>
+                <span><strong>Complete n8n Automation Toolkit</strong> — ready-to-deploy workflow library</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-cream">
+                <span style="color: #e8d48a; margin-top: 0.125rem;">&#9670;</span>
+                <span><strong>Advanced Skills Module</strong> — AI agents, web scraping &amp; data pipelines</span>
+              </li>
+            </ul>
+
+            <!-- VIP value callout -->
+            <div class="mb-6 py-3 px-4 rounded-sm" style="background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.15);">
+              <div class="flex justify-between items-center">
+                <span class="body-text text-cream-muted text-xs">Retail value</span>
+                <span class="heading-display text-lg text-accent font-semibold">$2,850+</span>
+              </div>
+            </div>
+
+            <a href="https://buy.stripe.com/9B6bJ24xc4V66eyd4k5c403" class="btn-primary text-sm tracking-widest inline-block w-full py-4 text-center">Enroll VIP — $250</a>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="text-center text-cream-muted text-xs body-text mb-12">Next cohort starts June 3rd &middot; Limited to 30 seats total &middot; VIP spots limited to 10</p>
+
+      <!-- Guarantee -->
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="border border-accent/20 rounded-sm p-8" style="background: linear-gradient(135deg, #111219 0%, #15161e 100%);">
+          <div class="heading-display text-xl text-accent font-semibold mb-3">The "10-Hour" Guarantee</div>
+          <p class="body-text text-cream-muted text-sm">
+            Complete the full 4-week program and implement what you learn. If you haven't saved at least 10 hours per week within 30 days of finishing, we'll refund every dollar. No questions, no hoops, no fine print. Applies to both tiers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="relative py-32 md:py-40 overflow-hidden" id="faq" style="background: linear-gradient(180deg, #0d0e13 0%, #111219 50%, #0d0e13 100%);">
+    <div class="max-w-3xl mx-auto px-6 md:px-12">
+      <div class="text-center mb-16">
+        <div class="section-label mb-6">006 / Questions</div>
+        <h2 class="heading-display text-4xl md:text-6xl font-semibold text-cream">
+          Frequently asked.
+        </h2>
+      </div>
+
+      <div class="space-y-0">
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">Do I need technical experience or coding skills?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              Not at all. This workshop is designed for professionals: marketers, managers, consultants, founders. Not developers. Week 4 covers AI-assisted development specifically for non-coders. If you can use a spreadsheet, you can do this.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">What's the time commitment?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              Plan for 5-7 hours per week: three 90-minute live sessions plus hands-on implementation time. All sessions are recorded if you miss one. Most participants say the time they save by week 2 already exceeds the time they invest.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">What exactly is n8n?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              n8n is an open-source workflow automation platform. Think Zapier, but more powerful, more flexible, and you own your data. You build automations visually by connecting nodes. It integrates with 400+ apps and services. We chose it because it's the most capable tool for professionals who want real control over their automations.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">Is this live or pre-recorded?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              All sessions are live with a real instructor and limited cohort size (30 max). You can ask questions, get feedback on your automations, and learn alongside peers facing similar challenges. Every session is also recorded for lifetime access.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">What if I'm already using AI tools at work?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              Great. You'll move even faster. Most participants have dabbled with ChatGPT or Copilot. This workshop takes you from "user" to "builder." You'll learn to chain AI tools together, automate entire processes, and build custom solutions. The gap between using AI and leveraging AI is where the real value lives.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+          <div class="flex justify-between items-center gap-4">
+            <span class="faq-question body-text text-cream font-medium transition-colors duration-300">Can my company pay for this?</span>
+            <span class="faq-icon text-accent text-xl font-light flex-shrink-0">+</span>
+          </div>
+          <div class="faq-answer">
+            <p class="body-text text-cream-muted text-sm pt-4 pb-2">
+              Absolutely. We provide a professional development invoice that most L&D and training budgets will cover without hesitation. Many participants expense this as upskilling or innovation training. We can also provide a justification template to send to your manager.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="relative py-32 md:py-44 overflow-hidden">
+    <div class="orb orb-gold w-[900px] h-[900px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="orb orb-warm w-[400px] h-[400px] bottom-0 left-0"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6 md:px-12 text-center">
+      <h2 class="heading-display text-5xl md:text-8xl font-semibold text-cream mb-8">
+        Six months from now,<br>you'll either have<br>these skills, or <span class="text-accent italic">wish</span><br>you started today.
+      </h2>
+      <p class="body-text text-cream-muted text-lg max-w-xl mx-auto mb-12">
+        The next cohort begins June 3, 2026. Thirty seats. Once they're filled, the doors close.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="https://buy.stripe.com/9B6bJ24xc4V66eyd4k5c403" class="btn-primary text-sm tracking-widest">Enroll VIP — $250</a>
+        <a href="#pricing" class="btn-secondary text-sm">See All Options</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-accent/10 py-12">
+    <div class="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="font-display text-xl font-semibold text-cream">AI<span class="text-accent">Pro</span></div>
+      <div class="flex gap-8">
+        <a href="#curriculum" class="text-cream-muted text-sm hover:text-cream transition-colors duration-300 font-body">Curriculum</a>
+        <a href="#pricing" class="text-cream-muted text-sm hover:text-cream transition-colors duration-300 font-body">Pricing</a>
+        <a href="#faq" class="text-cream-muted text-sm hover:text-cream transition-colors duration-300 font-body">FAQ</a>
+      </div>
+      <div class="text-cream-muted text-xs font-body">&copy; 2026 AI for Professionals. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- ===== ANIMATIONS ===== -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Navbar background on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        navbar.style.background = 'rgba(7,7,10,0.95)';
+        navbar.style.backdropFilter = 'blur(8px)';
+        navbar.style.webkitBackdropFilter = 'blur(8px)';
+        navbar.style.borderBottom = '1px solid rgba(201,168,76,0.08)';
+      } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.webkitBackdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+      }
+    });
+
+    // Countdown timer — June 3, 2026 9:00 AM local time
+    (function() {
+      const target = new Date('2026-06-03T09:00:00').getTime();
+      const daysEl = document.getElementById('cd-days');
+      const hoursEl = document.getElementById('cd-hours');
+      const minsEl = document.getElementById('cd-mins');
+      const secsEl = document.getElementById('cd-secs');
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+
+      function tick() {
+        const now = Date.now();
+        const diff = Math.max(0, target - now);
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        daysEl.textContent = pad(d);
+        hoursEl.textContent = pad(h);
+        minsEl.textContent = pad(m);
+        secsEl.textContent = pad(s);
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // Counter — set final value immediately
+    document.querySelectorAll('.counter').forEach(counter => {
+      counter.innerText = counter.getAttribute('data-target');
+    });
+
+    // Adoption curve draw animation
+    (function() {
+      const curve = document.getElementById('adoption-curve');
+      if (curve) {
+        const len = curve.getTotalLength();
+        curve.style.strokeDasharray = len;
+        curve.style.strokeDashoffset = len;
+
+        gsap.to(curve, {
+          strokeDashoffset: 0,
+          duration: 1.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#adoption-curve-container',
+            start: 'top 75%',
+            toggleActions: 'play none none none'
+          },
+          onComplete: function() {
+            // Fade in data points with stagger
+            gsap.to('.curve-point', { opacity: 1, duration: 0.4, stagger: 0.2, ease: 'power2.out' });
+            gsap.to('.curve-label', { opacity: 1, duration: 0.4, stagger: 0.2, delay: 0.1, ease: 'power2.out' });
+            // Fade in "You Are Here"
+            gsap.to('#you-are-here', { opacity: 1, duration: 0.6, delay: 0.6, ease: 'power2.out' });
+            // Fade in zone labels
+            gsap.to('#zone-labels', { opacity: 1, duration: 0.5, delay: 0.9, ease: 'power2.out' });
+          }
+        });
+      }
+    })();
+
+    // Parallax orbs
+    gsap.utils.toArray('.orb').forEach(orb => {
+      gsap.to(orb, {
+        y: () => Math.random() * 100 - 50,
+        x: () => Math.random() * 60 - 30,
+        scrollTrigger: {
+          trigger: orb.parentElement,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 2
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
