@@ -698,50 +698,65 @@
     </div>
   </footer>
 
-  <!-- ===== ANIMATIONS ===== -->
+  <!-- ===== CORE JS (no GSAP dependency) ===== -->
   <script>
-    gsap.registerPlugin(ScrollTrigger);
+    document.addEventListener('DOMContentLoaded', function() {
 
-    // Countdown timer — June 3, 2026 9:00 AM local time
-    (function() {
-      const target = new Date('2026-06-03T09:00:00').getTime();
-      const daysEl = document.getElementById('cd-days');
-      const hoursEl = document.getElementById('cd-hours');
-      const minsEl = document.getElementById('cd-mins');
-      const secsEl = document.getElementById('cd-secs');
+      // Countdown timer — June 3, 2026 9:00 AM local time
+      (function() {
+        const target = new Date('2026-06-03T09:00:00').getTime();
+        const daysEl = document.getElementById('cd-days');
+        const hoursEl = document.getElementById('cd-hours');
+        const minsEl = document.getElementById('cd-mins');
+        const secsEl = document.getElementById('cd-secs');
+        if (!daysEl) return;
 
-      function pad(n) { return String(n).padStart(2, '0'); }
+        function pad(n) { return String(n).padStart(2, '0'); }
 
-      function tick() {
-        const now = Date.now();
-        const diff = Math.max(0, target - now);
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        daysEl.textContent = pad(d);
-        hoursEl.textContent = pad(h);
-        minsEl.textContent = pad(m);
-        secsEl.textContent = pad(s);
-      }
+        function tick() {
+          const now = Date.now();
+          const diff = Math.max(0, target - now);
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor((diff % 86400000) / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          daysEl.textContent = pad(d);
+          hoursEl.textContent = pad(h);
+          minsEl.textContent = pad(m);
+          secsEl.textContent = pad(s);
+        }
 
-      tick();
-      setInterval(tick, 1000);
-    })();
+        tick();
+        setInterval(tick, 1000);
+      })();
 
-    // Counter — set final value immediately
-    document.querySelectorAll('.counter').forEach(counter => {
-      counter.innerText = counter.getAttribute('data-target');
+      // Counters — set final value immediately
+      document.querySelectorAll('.counter').forEach(function(counter) {
+        counter.innerText = counter.getAttribute('data-target');
+      });
+
+      // FAQ accordion
+      document.querySelectorAll('.faq-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          item.classList.toggle('active');
+        });
+      });
+
     });
+  </script>
 
-    // Adoption curve draw animation
+  <!-- ===== GSAP ANIMATIONS (optional — degrades gracefully) ===== -->
+  <script>
     (function() {
-      const curve = document.getElementById('adoption-curve');
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Adoption curve draw animation
+      var curve = document.getElementById('adoption-curve');
       if (curve) {
-        const len = curve.getTotalLength();
+        var len = curve.getTotalLength();
         curve.style.strokeDasharray = len;
         curve.style.strokeDashoffset = len;
-
         gsap.to(curve, {
           strokeDashoffset: 0,
           duration: 1.8,
@@ -752,30 +767,27 @@
             toggleActions: 'play none none none'
           },
           onComplete: function() {
-            // Fade in data points with stagger
             gsap.to('.curve-point', { opacity: 1, duration: 0.4, stagger: 0.2, ease: 'power2.out' });
             gsap.to('.curve-label', { opacity: 1, duration: 0.4, stagger: 0.2, delay: 0.1, ease: 'power2.out' });
-            // Fade in "You Are Here"
             gsap.to('#you-are-here', { opacity: 1, duration: 0.6, delay: 0.6, ease: 'power2.out' });
-            // Fade in zone labels
             gsap.to('#zone-labels', { opacity: 1, duration: 0.5, delay: 0.9, ease: 'power2.out' });
           }
         });
       }
-    })();
 
-    // Parallax orbs
-    gsap.utils.toArray('.orb').forEach(orb => {
-      gsap.to(orb, {
-        y: () => Math.random() * 100 - 50,
-        x: () => Math.random() * 60 - 30,
-        scrollTrigger: {
-          trigger: orb.parentElement,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 2
-        }
+      // Parallax orbs
+      gsap.utils.toArray('.orb').forEach(function(orb) {
+        gsap.to(orb, {
+          y: function() { return Math.random() * 100 - 50; },
+          x: function() { return Math.random() * 60 - 30; },
+          scrollTrigger: {
+            trigger: orb.parentElement,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2
+          }
+        });
       });
-    });
+    })();
   </script>
 
