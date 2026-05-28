@@ -1,0 +1,900 @@
+<!--
+=================================================================
+  KAJABI SETUP — 3 STEPS, 5 MINUTES
+=================================================================
+
+  STEP 1 — Head Code (do this once, not per page):
+  In Kajabi go to: Settings → Website → Custom Code → Head
+  Paste everything between HEAD-CODE-START and HEAD-CODE-END.
+
+  STEP 2 — Page Content:
+  In Kajabi, create a new Landing Page → choose Blank template.
+  In the page editor, delete any default sections.
+  Add one "Custom HTML" block.
+  Paste everything between BODY-CODE-START and BODY-CODE-END.
+
+  STEP 3 — Save & Publish.
+
+  NOTE: This page manages its own navigation bar. Kajabi's
+  default site header is hidden automatically by the CSS.
+=================================================================
+-->
+
+
+<!-- ===================== HEAD-CODE-START =====================
+     Paste this block into: Settings → Website → Custom Code → Head
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          midnight: '#07070a',
+          surface: '#0f1014',
+          elevated: '#16171d',
+          floating: '#1e2028',
+          accent: '#c9a84c',
+          'accent-light': '#e8d48a',
+          'accent-dim': '#8b7433',
+          cream: '#f0ebe0',
+          'cream-muted': '#c4bfb4',
+          warm: '#2a2520',
+        },
+        fontFamily: {
+          display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          body: ['"Outfit"', 'system-ui', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  /* ── Hide Kajabi's native header/nav ── */
+  .site-header,
+  header.site-header,
+  #site-header,
+  .site-nav,
+  .nav--main,
+  [data-section-type="header"],
+  .kajabi-header,
+  .header-wrapper,
+  nav.site-navigation {
+    display: none !important;
+  }
+
+  /* ── Page background & base reset ── */
+  html, body {
+    background: #07070a !important;
+    color: #f0ebe0 !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Remove Kajabi page container padding/margins */
+  .page-wrapper,
+  .page-block,
+  .kjb-page-section,
+  [data-block-type="custom_html"],
+  .custom-html-block {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ── Typography ── */
+  .heading-display {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+  .body-text {
+    font-family: 'Outfit', system-ui, sans-serif;
+    line-height: 1.7;
+  }
+
+  /* ── Gradient orbs ── */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .orb-gold { background: radial-gradient(circle, rgba(201,168,76,0.22) 0%, transparent 70%); }
+  .orb-warm { background: radial-gradient(circle, rgba(180,120,60,0.15) 0%, transparent 70%); }
+  .orb-blue { background: radial-gradient(circle, rgba(60,80,160,0.12) 0%, transparent 70%); }
+
+  /* ── Shadows ── */
+  .shadow-layered {
+    box-shadow:
+      0 1px 2px rgba(201,168,76,0.04),
+      0 4px 8px rgba(0,0,0,0.3),
+      0 16px 32px rgba(0,0,0,0.4),
+      0 32px 64px rgba(0,0,0,0.2);
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    background: linear-gradient(135deg, #c9a84c 0%, #a8873a 100%);
+    color: #07070a;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 18px 48px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.3), 0 2px 8px rgba(201,168,76,0.2);
+    color: #07070a;
+    text-decoration: none;
+  }
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+  .btn-secondary {
+    background: transparent;
+    color: #c9a84c;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 16px 40px;
+    border: 1px solid rgba(201,168,76,0.3);
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, background 0.3s ease;
+  }
+  .btn-secondary:hover {
+    border-color: #c9a84c;
+    background: rgba(201,168,76,0.06);
+    transform: translateY(-1px);
+    color: #c9a84c;
+    text-decoration: none;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c9a84c;
+    opacity: 0.85;
+    display: block;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, #c9a84c, transparent);
+  }
+
+  /* ── Week cards ── */
+  .week-card {
+    background: linear-gradient(135deg, #13141a 0%, #1a1b23 100%);
+    border: 1px solid rgba(201,168,76,0.12);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease;
+  }
+  .week-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .week-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.2); }
+  .week-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .week-card:hover::before { opacity: 1; }
+
+  .week-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    font-weight: 300;
+    line-height: 1;
+    color: rgba(201,168,76,0.1);
+    position: absolute;
+    top: -10px;
+    right: 20px;
+  }
+
+  /* ── Stats ── */
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #c9a84c;
+    line-height: 1;
+  }
+  .stat-suffix { font-size: 2rem; font-weight: 400; color: #e8d48a; margin-left: 2px; }
+  .stat-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c4bfb4;
+    margin-top: 8px;
+  }
+
+  /* ── FAQ ── */
+  .faq-item { border-bottom: 1px solid rgba(201,168,76,0.15); cursor: pointer; }
+  .faq-item:hover .faq-question { color: #c9a84c; }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .faq-item.active .faq-answer { max-height: 300px; }
+  .faq-item.active .faq-icon { transform: rotate(45deg); }
+  .faq-icon { transition: transform 0.3s ease; }
+
+  /* ── Marquee ── */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-track { animation: marquee 30s linear infinite; }
+
+  /* ── Glow line ── */
+  .glow-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #c9a84c 20%, #e8d48a 50%, #c9a84c 80%, transparent 100%);
+    opacity: 0.5;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #07070a; }
+  ::-webkit-scrollbar-thumb { background: #2a2520; border-radius: 3px; }
+
+  /* ── Pricing border animation ── */
+  .pricing-border {
+    background: linear-gradient(135deg, #c9a84c, #8b7433, #c9a84c, #e8d48a, #c9a84c);
+    background-size: 400% 400%;
+    animation: gradientShift 6s ease infinite;
+    padding: 1px;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ── Pulse dot (SVG) ── */
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 0.2; }
+    50% { transform: scale(2.2); opacity: 0; }
+  }
+  .pulse-ring {
+    transform-origin: center;
+    animation: pulse-dot 2.5s ease-out infinite;
+  }
+</style>
+
+<!-- ====================== HEAD-CODE-END ======================-->
+
+
+
+
+<!-- ===================== BODY-CODE-START =====================
+     Paste this block into a Custom HTML block on your Kajabi page
+-->
+
+
+<!-- ===== HERO ===== -->
+<section class="relative flex items-center justify-center overflow-hidden" style="min-height:100vh;background:#07070a;" id="hero">
+  <div class="orb orb-gold w-[700px] h-[700px] -top-60 -right-60"></div>
+  <div class="orb orb-warm w-[600px] h-[600px] bottom-0 -left-32"></div>
+  <div class="orb orb-blue w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+  <div class="absolute inset-0" style="background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:80px 80px;"></div>
+
+  <div class="relative z-10 text-center max-w-5xl mx-auto px-6 pt-24">
+    <span class="section-label mb-6">4-Week Intensive Workshop</span>
+    <h1 class="heading-display text-cream mb-6" style="font-size:clamp(2.8rem,8vw,6rem);">
+      Master AI.<br><span style="color:#c9a84c;font-style:italic;font-weight:500;">Transform</span> Your Career.
+    </h1>
+    <p class="body-text text-cream-muted max-w-2xl mx-auto mb-10" style="font-size:1.05rem;line-height:1.8;">
+      In 28 days, go from curious about AI to confidently building automations, workflows, and tools that make your colleagues wonder what changed.
+    </p>
+
+    <!-- Countdown Timer -->
+    <div class="mb-10">
+      <div style="font-family:'Outfit',sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:#c4bfb4;opacity:0.7;margin-bottom:1rem;">First class begins</div>
+      <div class="flex justify-center gap-4 sm:gap-5">
+        <div class="text-center">
+          <div class="heading-display text-cream" style="font-size:clamp(1.8rem,5vw,2.5rem);" id="cd-days">--</div>
+          <div class="stat-label mt-1">Days</div>
+        </div>
+        <div class="heading-display" style="font-size:clamp(1.8rem,5vw,2.5rem);color:rgba(201,168,76,0.3);font-weight:300;">:</div>
+        <div class="text-center">
+          <div class="heading-display text-cream" style="font-size:clamp(1.8rem,5vw,2.5rem);" id="cd-hours">--</div>
+          <div class="stat-label mt-1">Hours</div>
+        </div>
+        <div class="heading-display" style="font-size:clamp(1.8rem,5vw,2.5rem);color:rgba(201,168,76,0.3);font-weight:300;">:</div>
+        <div class="text-center">
+          <div class="heading-display text-cream" style="font-size:clamp(1.8rem,5vw,2.5rem);" id="cd-mins">--</div>
+          <div class="stat-label mt-1">Minutes</div>
+        </div>
+        <div class="heading-display" style="font-size:clamp(1.8rem,5vw,2.5rem);color:rgba(201,168,76,0.3);font-weight:300;">:</div>
+        <div class="text-center">
+          <div class="heading-display text-cream" style="font-size:clamp(1.8rem,5vw,2.5rem);" id="cd-secs">--</div>
+          <div class="stat-label mt-1">Seconds</div>
+        </div>
+      </div>
+      <div style="color:rgba(201,168,76,0.6);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'Outfit',sans-serif;margin-top:1rem;">June 3, 2026 &middot; 9:00 AM</div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+      <a href="#pricing" class="btn-primary" style="font-size:0.8rem;letter-spacing:0.15em;">Reserve Your Seat</a>
+      <a href="#curriculum" class="btn-secondary" style="font-size:0.8rem;">View Curriculum</a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
+    <div style="width:1px;height:3rem;background:linear-gradient(to bottom,#c9a84c,transparent);"></div>
+  </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div style="padding:1.5rem 0;border-top:1px solid rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.1);overflow:hidden;background:#07070a;">
+  <div class="marquee-track flex items-center whitespace-nowrap">
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">AI Fundamentals</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">Automation Frameworks</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">n8n Workflows</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">AI-Assisted Development</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">AI Fundamentals</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">Automation Frameworks</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">n8n Workflows</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+    <span class="heading-display" style="font-size:clamp(2rem,5vw,4rem);font-weight:300;color:rgba(201,168,76,0.2);text-transform:uppercase;letter-spacing:0.1em;margin:0 2rem;">AI-Assisted Development</span>
+    <span style="color:rgba(201,168,76,0.2);margin:0 1rem;">&bull;</span>
+  </div>
+</div>
+
+<!-- ===== PROBLEM SECTION ===== -->
+<section class="relative overflow-hidden" style="padding:8rem 0;background:#07070a;">
+  <div class="orb orb-warm w-[400px] h-[400px]" style="top:5rem;left:-5rem;"></div>
+  <div class="max-w-6xl mx-auto px-6 md:px-12">
+    <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+      <div>
+        <span class="section-label mb-6">001 / The Reality</span>
+        <h2 class="heading-display text-cream mb-8" style="font-size:clamp(2rem,5vw,3.5rem);">
+          You know AI is<br>changing everything.
+        </h2>
+        <div class="divider mb-8"></div>
+        <div class="space-y-6 body-text text-cream-muted">
+          <p>Your inbox is full of AI tools you haven't tried. Your competitors are shipping faster. Your team asks questions you can't answer. And that quiet voice keeps getting louder: <em style="color:#f0ebe0;">"Am I falling behind?"</em></p>
+          <p>You've watched the tutorials. Read the articles. Maybe even played with ChatGPT a few times. But there's a canyon between "I've used AI" and "I've built real systems that save me 20 hours a week."</p>
+          <p>You don't need another overview. You need an <span style="color:#c9a84c;font-weight:500;">AI Operating System</span>.</p>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="aspect-square relative rounded-sm overflow-hidden shadow-layered" id="adoption-curve-container">
+          <div class="absolute inset-0" style="background:linear-gradient(135deg,#16171d,#1a1b23);"></div>
+          <div class="absolute inset-0" style="background-image:radial-gradient(circle at 30% 40%,rgba(201,168,76,0.15) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(100,120,200,0.08) 0%,transparent 50%);"></div>
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="60" y1="340" x2="370" y2="340" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+            <line x1="60" y1="270" x2="370" y2="270" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+            <line x1="60" y1="200" x2="370" y2="200" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+            <line x1="60" y1="130" x2="370" y2="130" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+            <line x1="60" y1="60"  x2="370" y2="60"  stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+            <line x1="60"  y1="55" x2="60"  y2="345" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+            <line x1="122" y1="55" x2="122" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+            <line x1="184" y1="55" x2="184" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+            <line x1="246" y1="55" x2="246" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+            <line x1="308" y1="55" x2="308" y2="345" stroke="rgba(201,168,76,0.04)" stroke-width="0.5"/>
+            <line x1="370" y1="55" x2="370" y2="345" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+            <text x="52" y="344" text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">0%</text>
+            <text x="52" y="204" text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">50%</text>
+            <text x="52" y="64"  text-anchor="end" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">100%</text>
+            <text x="60"  y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2022</text>
+            <text x="122" y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2023</text>
+            <text x="184" y="360" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-size="9" font-family="Outfit">2024</text>
+            <text x="246" y="360" text-anchor="middle" fill="rgba(201,168,76,0.4)"  font-size="9" font-family="Outfit" font-weight="600">2025</text>
+            <text x="308" y="360" text-anchor="middle" fill="rgba(201,168,76,0.3)"  font-size="9" font-family="Outfit">2026</text>
+            <text x="370" y="360" text-anchor="middle" fill="rgba(201,168,76,0.25)" font-size="9" font-family="Outfit">2027</text>
+            <rect x="215" y="55" width="62" height="290" fill="rgba(201,168,76,0.04)" rx="2"/>
+            <path id="adoption-curve" d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63" stroke="rgba(201,168,76,0.7)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63" stroke="rgba(201,168,76,0.15)" stroke-width="8" fill="none" stroke-linecap="round" filter="blur(4px)"/>
+            <path d="M60,256 C90,256 100,186 122,186 C144,186 155,122 184,122 C210,122 220,93 246,87 C272,81 290,73 308,70 C330,67 355,64 370,63 L370,340 L60,340 Z" fill="url(#curveFill)"/>
+            <defs>
+              <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="rgba(201,168,76,0.12)"/>
+                <stop offset="100%" stop-color="rgba(201,168,76,0.01)"/>
+              </linearGradient>
+            </defs>
+            <g id="curve-data-points">
+              <circle cx="122" cy="186" r="4" fill="rgba(201,168,76,0.8)" class="curve-point" opacity="0"/>
+              <text x="122" y="175" text-anchor="middle" fill="rgba(240,235,224,0.7)" font-size="11" font-weight="600" font-family="Outfit" class="curve-label" opacity="0">55%</text>
+              <circle cx="184" cy="122" r="4" fill="rgba(201,168,76,0.8)" class="curve-point" opacity="0"/>
+              <text x="184" y="111" text-anchor="middle" fill="rgba(240,235,224,0.7)" font-size="11" font-weight="600" font-family="Outfit" class="curve-label" opacity="0">78%</text>
+              <circle cx="308" cy="70"  r="4" fill="rgba(201,168,76,0.5)" class="curve-point" opacity="0"/>
+              <text x="308" y="59"  text-anchor="middle" fill="rgba(240,235,224,0.45)" font-size="10" font-family="Outfit" class="curve-label" opacity="0">~95%</text>
+            </g>
+            <g id="you-are-here" opacity="0">
+              <circle cx="246" cy="87" r="7" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.8)" stroke-width="1.5" class="pulse-ring"/>
+              <circle cx="246" cy="87" r="3.5" fill="rgba(201,168,76,1)"/>
+              <line x1="246" y1="95" x2="246" y2="125" stroke="rgba(201,168,76,0.4)" stroke-width="1" stroke-dasharray="3 2"/>
+              <text x="246" y="140" text-anchor="middle" fill="rgba(201,168,76,0.9)" font-size="9" font-weight="600" font-family="Outfit" letter-spacing="0.12em">YOU ARE HERE</text>
+            </g>
+            <g id="zone-labels" opacity="0">
+              <text x="90"  y="44" text-anchor="middle" fill="rgba(201,168,76,0.25)" font-size="8" font-family="Outfit" letter-spacing="0.1em">EARLY ADOPTERS</text>
+              <text x="246" y="44" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-size="8" font-weight="600" font-family="Outfit" letter-spacing="0.15em">THE WINDOW</text>
+              <text x="350" y="44" text-anchor="middle" fill="rgba(201,168,76,0.18)" font-size="8" font-family="Outfit" letter-spacing="0.1em">TOO LATE</text>
+            </g>
+          </svg>
+          <div class="absolute bottom-4 left-5 right-5 flex justify-between items-end">
+            <span style="color:rgba(201,168,76,0.5);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;font-family:'Outfit',sans-serif;">The adoption curve waits for no one.</span>
+            <span style="color:rgba(196,191,180,0.2);font-size:7px;font-family:'Outfit',sans-serif;letter-spacing:0.05em;">McKinsey, BCG, Gartner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GLOW LINE ===== -->
+<div class="glow-line" style="max-width:56rem;margin:0 auto;"></div>
+
+<!-- ===== TRANSFORMATION ===== -->
+<section class="relative overflow-hidden" style="padding:8rem 0;background:#07070a;">
+  <div class="orb orb-gold w-[500px] h-[500px]" style="top:-5rem;right:0;"></div>
+  <div class="max-w-6xl mx-auto px-6 md:px-12">
+    <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+      <div class="relative order-2 md:order-1">
+        <div class="aspect-square relative rounded-sm overflow-hidden shadow-layered">
+          <div class="absolute inset-0" style="background:linear-gradient(135deg,#16171d,#0f1014);"></div>
+          <div class="absolute inset-0" style="background-image:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.2) 0%,transparent 60%);"></div>
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400" fill="none">
+            <path d="M60 200 L140 200" stroke="rgba(201,168,76,0.35)" stroke-width="1.5"/>
+            <path d="M260 200 L340 200" stroke="rgba(201,168,76,0.35)" stroke-width="1.5"/>
+            <path d="M200 60 L200 140" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+            <path d="M200 260 L200 340" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+            <rect x="70" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+            <rect x="170" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.6)" stroke-width="2" fill="rgba(201,168,76,0.1)"/>
+            <rect x="270" y="170" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+            <rect x="170" y="80"  width="60" height="60" rx="6" stroke="rgba(201,168,76,0.25)" stroke-width="1" fill="rgba(201,168,76,0.04)"/>
+            <rect x="170" y="260" width="60" height="60" rx="6" stroke="rgba(201,168,76,0.25)" stroke-width="1" fill="rgba(201,168,76,0.04)"/>
+            <polygon points="148,200 142,196 142,204" fill="rgba(201,168,76,0.5)"/>
+            <polygon points="262,200 256,196 256,204" fill="rgba(201,168,76,0.5)"/>
+            <polygon points="200,148 196,142 204,142" fill="rgba(201,168,76,0.35)"/>
+            <polygon points="200,262 196,268 204,268" fill="rgba(201,168,76,0.35)"/>
+            <circle cx="200" cy="200" r="18" stroke="rgba(201,168,76,0.7)" stroke-width="2" fill="rgba(201,168,76,0.12)"/>
+            <path d="M193 200 L200 191 L207 200 L200 209 Z" fill="rgba(201,168,76,0.6)"/>
+            <text x="100" y="205" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-size="10" font-family="Outfit">IN</text>
+            <text x="300" y="205" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-size="10" font-family="Outfit">OUT</text>
+            <text x="200" y="115" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="9" font-family="Outfit">API</text>
+            <text x="200" y="295" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="9" font-family="Outfit">DATA</text>
+            <text x="200" y="204" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-size="10" font-weight="600" font-family="Outfit">AI</text>
+          </svg>
+          <div class="absolute bottom-6 left-6 right-6 text-right">
+            <span style="color:rgba(201,168,76,0.5);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;font-family:'Outfit',sans-serif;">Systematic. Repeatable. Yours.</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-1 md:order-2">
+        <span class="section-label mb-6">002 / The Transformation</span>
+        <h2 class="heading-display text-cream mb-8" style="font-size:clamp(2rem,5vw,3.5rem);">
+          From curious to<br><span style="color:#c9a84c;font-style:italic;">capable</span> in 28 days.
+        </h2>
+        <div class="divider mb-8"></div>
+        <div class="space-y-6 body-text text-cream-muted">
+          <p><strong style="color:#f0ebe0;">AI for Professionals</strong> is a 4-week intensive workshop designed for people who are done watching from the sidelines. You won't just learn what AI can do. You'll build the automations, workflows, and tools that put you months ahead of everyone still Googling "how to use ChatGPT."</p>
+          <p>By the end of week four, you'll have a portfolio of real automations running in your work. Not hypothetical. Not theoretical. <span style="color:#c9a84c;font-weight:500;">Deployed and saving you hours every single week.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CURRICULUM ===== -->
+<section class="relative overflow-hidden" id="curriculum" style="padding:8rem 0;background:linear-gradient(180deg,#0d0e13 0%,#111219 50%,#0d0e13 100%);">
+  <div class="orb orb-blue w-[600px] h-[600px]" style="top:33%;right:-8rem;"></div>
+  <div class="max-w-6xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-20">
+      <span class="section-label mb-6">003 / The Curriculum</span>
+      <h2 class="heading-display text-cream mb-6" style="font-size:clamp(2rem,6vw,5rem);">
+        Four weeks that change<br>how you <span style="color:#c9a84c;font-style:italic;">work</span>.
+      </h2>
+      <p class="body-text text-cream-muted max-w-2xl mx-auto">
+        Each week builds on the last. By the end, you won't just understand AI. You'll have built systems that work while you sleep.
+      </p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- Week 1 -->
+      <div class="week-card p-8 md:p-10 rounded-sm">
+        <span class="week-num">01</span>
+        <div class="relative" style="z-index:10;">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width:2rem;height:2rem;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg style="width:1rem;height:1rem;color:#c9a84c;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <span class="section-label" style="opacity:0.6;">Week One</span>
+          </div>
+          <h3 class="heading-display text-cream mb-4" style="font-size:1.6rem;">AI Fundamentals & Best Practices</h3>
+          <p class="body-text text-cream-muted mb-6" style="font-size:0.875rem;">Stop guessing. Learn how AI actually thinks, when to use which model, and the prompting frameworks that separate amateurs from professionals.</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Mental models for choosing the right AI tool for every task</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Advanced prompting: chain-of-thought, system prompts, few-shot patterns</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Ethical guardrails and responsible implementation at work</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="week-card p-8 md:p-10 rounded-sm">
+        <span class="week-num">02</span>
+        <div class="relative" style="z-index:10;">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width:2rem;height:2rem;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg style="width:1rem;height:1rem;color:#c9a84c;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+            </div>
+            <span class="section-label" style="opacity:0.6;">Week Two</span>
+          </div>
+          <h3 class="heading-display text-cream mb-4" style="font-size:1.6rem;">Frameworks for Automation</h3>
+          <p class="body-text text-cream-muted mb-6" style="font-size:0.875rem;">Learn to see your work through an automation lens. Identify the repetitive tasks bleeding hours from your week and design systems that eliminate them permanently.</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>The Automation Audit: mapping every process worth automating</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Decision frameworks: when to automate vs. when to delegate</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Building your first end-to-end automated workflow</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="week-card p-8 md:p-10 rounded-sm">
+        <span class="week-num">03</span>
+        <div class="relative" style="z-index:10;">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width:2rem;height:2rem;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg style="width:1rem;height:1rem;color:#c9a84c;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <span class="section-label" style="opacity:0.6;">Week Three</span>
+          </div>
+          <h3 class="heading-display text-cream mb-4" style="font-size:1.6rem;">Mastering n8n for Real-World Automation</h3>
+          <p class="body-text text-cream-muted mb-6" style="font-size:0.875rem;">n8n is the open-source automation engine that connects everything. This week you go from zero to dangerous, building multi-step workflows that run on autopilot.</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Hands-on: connect APIs, databases, and AI models in visual workflows</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Trigger-based automation: email processing, form handling, scheduling</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Error handling, logging, and making workflows bulletproof</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="week-card p-8 md:p-10 rounded-sm">
+        <span class="week-num">04</span>
+        <div class="relative" style="z-index:10;">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width:2rem;height:2rem;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg style="width:1rem;height:1rem;color:#c9a84c;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </div>
+            <span class="section-label" style="opacity:0.6;">Week Four</span>
+          </div>
+          <h3 class="heading-display text-cream mb-4" style="font-size:1.6rem;">AI-Assisted Development</h3>
+          <p class="body-text text-cream-muted mb-6" style="font-size:0.875rem;">Learn to use AI as your development partner to build custom tools, dashboards, and applications — even if you've never written a line of code.</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Build a custom internal tool using AI-assisted coding</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Deploy your creation: from prototype to production in one session</span></li>
+            <li class="flex items-start gap-3 text-cream-muted" style="font-size:0.875rem;"><span style="color:#c9a84c;margin-top:0.25rem;">&#9670;</span><span>Your personal automation roadmap: what to build next, and how</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESULTS ===== -->
+<section class="relative overflow-hidden" id="results" style="padding:8rem 0;background:#07070a;">
+  <div class="max-w-6xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-20">
+      <span class="section-label mb-6">004 / The Results</span>
+      <h2 class="heading-display text-cream" style="font-size:clamp(2rem,6vw,5rem);max-width:56rem;margin:0 auto;">
+        What you'll walk away <span style="color:#c9a84c;font-style:italic;">with</span>.
+      </h2>
+    </div>
+    <div class="grid grid-cols-3 gap-8 md:gap-6 mb-24" style="max-width:48rem;margin:0 auto 6rem;">
+      <div class="text-center">
+        <div class="stat-number"><span class="counter" data-target="10">10</span></div>
+        <div class="stat-label">Hours Saved Per Week</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-number"><span class="counter" data-target="6">6</span></div>
+        <div class="stat-label">Hours of Live Instruction</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-number">1<span class="stat-suffix">:1</span></div>
+        <div class="stat-label">Office Hour</div>
+      </div>
+    </div>
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="heading-display mb-4" style="font-size:3rem;color:rgba(201,168,76,0.3);">&ldquo;</div>
+      <p class="heading-display" style="font-size:clamp(1.3rem,3vw,2rem);font-weight:300;color:rgba(240,235,224,0.8);font-style:italic;line-height:1.4;">
+        The future is here, it's just not evenly distributed yet.
+      </p>
+      <div style="margin-top:1.5rem;color:rgba(196,191,180,0.5);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'Outfit',sans-serif;">William Gibson</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GLOW LINE ===== -->
+<div class="glow-line" style="max-width:56rem;margin:0 auto;"></div>
+
+<!-- ===== PRICING ===== -->
+<section class="relative overflow-hidden" id="pricing" style="padding:8rem 0;background:#07070a;">
+  <div class="orb orb-gold w-[700px] h-[700px]" style="top:0;left:50%;transform:translateX(-50%);"></div>
+  <div class="max-w-5xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-16">
+      <span class="section-label mb-6">005 / Investment</span>
+      <h2 class="heading-display text-cream mb-6" style="font-size:clamp(2rem,6vw,5rem);">
+        Choose your<br><span style="color:#c9a84c;font-style:italic;">level of</span> mastery.
+      </h2>
+      <p class="body-text text-cream-muted max-w-xl mx-auto">
+        Both tiers get the full 4-week curriculum. VIP adds private coaching and advanced skill modules so you go further, faster.
+      </p>
+    </div>
+
+    <!-- Two-column pricing -->
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+
+      <!-- Standard -->
+      <div class="rounded-sm flex flex-col" style="background:linear-gradient(135deg,#13141a,#1a1b23);border:1px solid rgba(201,168,76,0.18);padding:2rem 2.5rem;">
+        <div style="margin-bottom:2rem;">
+          <span class="section-label" style="display:block;margin-bottom:0.75rem;">Standard</span>
+          <div class="heading-display text-cream" style="font-size:clamp(2.5rem,6vw,4rem);font-weight:700;line-height:1;">$100</div>
+          <div class="body-text text-cream-muted" style="font-size:0.8rem;margin-top:0.25rem;">One-time. Lifetime access to materials.</div>
+        </div>
+        <div class="glow-line" style="margin-bottom:2rem;"></div>
+        <ul style="list-style:none;padding:0;margin:0 0 2rem 0;flex:1;">
+          <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Four 90-Minute Live Sessions</span></li>
+          <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>AI Prompting Framework Library</span></li>
+          <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Private Community Access (Lifetime)</span></li>
+          <li style="display:flex;align-items:flex-start;gap:0.75rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Session Recordings &amp; Future Updates</span></li>
+        </ul>
+        <a href="https://buy.stripe.com/dRm9AU7Jo87ibySe8o5c402" class="btn-primary" style="font-size:0.8rem;letter-spacing:0.15em;display:block;text-align:center;padding:1rem;background:linear-gradient(135deg,#8b7433,#6b5828);">Enroll — $100</a>
+      </div>
+
+      <!-- VIP -->
+      <div class="pricing-border rounded-sm" style="position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#a8873a);color:#07070a;font-family:'Outfit',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 16px;white-space:nowrap;z-index:10;">Most Popular</div>
+        <div class="rounded-sm flex flex-col" style="background:linear-gradient(135deg,#16171d,#1a1b24);padding:2rem 2.5rem;height:100%;">
+          <div style="margin-bottom:2rem;">
+            <span class="section-label" style="display:block;margin-bottom:0.75rem;color:#e8d48a;">VIP</span>
+            <div class="heading-display text-cream" style="font-size:clamp(2.5rem,6vw,4rem);font-weight:700;line-height:1;">$250</div>
+            <div class="body-text text-cream-muted" style="font-size:0.8rem;margin-top:0.25rem;">One-time. Everything in Standard, plus:</div>
+          </div>
+          <div class="glow-line" style="margin-bottom:2rem;"></div>
+          <ul style="list-style:none;padding:0;margin:0 0 2rem 0;flex:1;">
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Four 90-Minute Live Sessions</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>AI Prompting Framework Library</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Private Community Access (Lifetime)</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.25rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#c4bfb4;"><span style="color:#c9a84c;margin-top:0.1rem;">&#10003;</span><span>Session Recordings &amp; Future Updates</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.15);font-family:'Outfit',sans-serif;font-size:0.875rem;color:#f0ebe0;"><span style="color:#e8d48a;margin-top:0.1rem;">&#9670;</span><span><strong>1:1 Private Coaching</strong> — 1 dedicated hour with the instructor</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#f0ebe0;"><span style="color:#e8d48a;margin-top:0.1rem;">&#9670;</span><span><strong>Complete n8n Automation Toolkit</strong> — ready-to-deploy workflow library</span></li>
+            <li style="display:flex;align-items:flex-start;gap:0.75rem;font-family:'Outfit',sans-serif;font-size:0.875rem;color:#f0ebe0;"><span style="color:#e8d48a;margin-top:0.1rem;">&#9670;</span><span><strong>Advanced Skills Module</strong> — AI agents, web scraping &amp; data pipelines</span></li>
+          </ul>
+          <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:2px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'Outfit',sans-serif;font-size:0.7rem;color:#c4bfb4;">Retail value</span>
+            <span class="heading-display" style="font-size:1.3rem;color:#c9a84c;font-weight:600;">$2,850+</span>
+          </div>
+          <a href="https://buy.stripe.com/9B6bJ24xc4V66eyd4k5c403" class="btn-primary" style="font-size:0.8rem;letter-spacing:0.15em;display:block;text-align:center;padding:1rem;">Enroll VIP — $250</a>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;font-family:'Outfit',sans-serif;font-size:0.7rem;color:#c4bfb4;margin-bottom:3rem;">Next cohort starts June 3rd &middot; Limited to 30 seats total &middot; VIP spots limited to 10</p>
+
+    <div style="max-width:42rem;margin:0 auto;text-align:center;">
+      <div style="border:1px solid rgba(201,168,76,0.2);border-radius:2px;padding:2rem;background:linear-gradient(135deg,#111219,#15161e);">
+        <div class="heading-display" style="font-size:1.2rem;color:#c9a84c;font-weight:600;margin-bottom:0.75rem;">The "10-Hour" Guarantee</div>
+        <p class="body-text text-cream-muted" style="font-size:0.875rem;">Complete the full 4-week program and implement what you learn. If you haven't saved at least 10 hours per week within 30 days of finishing, we'll refund every dollar. No questions, no hoops, no fine print. Applies to both tiers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="relative overflow-hidden" id="faq" style="padding:8rem 0;background:linear-gradient(180deg,#0d0e13 0%,#111219 50%,#0d0e13 100%);">
+  <div class="max-w-3xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-16">
+      <span class="section-label mb-6">006 / Questions</span>
+      <h2 class="heading-display text-cream" style="font-size:clamp(2rem,5vw,3.5rem);">Frequently asked.</h2>
+    </div>
+    <div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">Do I need technical experience or coding skills?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">Not at all. This workshop is designed for professionals: marketers, managers, consultants, founders. Not developers. Week 4 covers AI-assisted development specifically for non-coders. If you can use a spreadsheet, you can do this.</p></div>
+      </div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">What's the time commitment?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">Plan for 5-7 hours per week: three 90-minute live sessions plus hands-on implementation time. All sessions are recorded if you miss one. Most participants say the time they save by week 2 already exceeds the time they invest.</p></div>
+      </div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">What exactly is n8n?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">n8n is an open-source workflow automation platform. Think Zapier, but more powerful, more flexible, and you own your data. It integrates with 400+ apps and services. We chose it because it's the most capable tool for professionals who want real control over their automations.</p></div>
+      </div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">Is this live or pre-recorded?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">All sessions are live with a real instructor and limited cohort size (30 max). You can ask questions, get feedback on your automations, and learn alongside peers facing similar challenges. Every session is also recorded for lifetime access.</p></div>
+      </div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">What if I'm already using AI tools at work?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">Great. You'll move even faster. Most participants have dabbled with ChatGPT or Copilot. This workshop takes you from "user" to "builder." The gap between using AI and leveraging AI is where the real value lives.</p></div>
+      </div>
+      <div class="faq-item py-6" onclick="this.classList.toggle('active')">
+        <div class="flex justify-between items-center gap-4">
+          <span class="faq-question body-text text-cream" style="font-weight:500;transition:color 0.3s;">Can my company pay for this?</span>
+          <span class="faq-icon" style="color:#c9a84c;font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+        </div>
+        <div class="faq-answer"><p class="body-text text-cream-muted" style="font-size:0.875rem;padding-top:1rem;padding-bottom:0.5rem;">Absolutely. We provide a professional development invoice that most L&amp;D and training budgets will cover without hesitation. We can also provide a justification template to send to your manager.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="relative overflow-hidden" style="padding:8rem 0;background:#07070a;">
+  <div class="orb orb-gold w-[900px] h-[900px]" style="top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="orb orb-warm w-[400px] h-[400px]" style="bottom:0;left:0;"></div>
+  <div class="relative max-w-4xl mx-auto px-6 md:px-12 text-center" style="z-index:10;">
+    <h2 class="heading-display text-cream mb-8" style="font-size:clamp(2.5rem,8vw,6rem);">
+      Six months from now,<br>you'll either have<br>these skills, or <span style="color:#c9a84c;font-style:italic;">wish</span><br>you started today.
+    </h2>
+    <p class="body-text text-cream-muted max-w-xl mx-auto mb-12" style="font-size:1.1rem;">
+      The next cohort begins June 3, 2026. Thirty seats. Once they're filled, the doors close.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="https://buy.stripe.com/9B6bJ24xc4V66eyd4k5c403" class="btn-primary" style="font-size:0.8rem;letter-spacing:0.15em;">Enroll VIP — $250</a>
+      <a href="#pricing" class="btn-secondary" style="font-size:0.8rem;">See All Options</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer style="border-top:1px solid rgba(201,168,76,0.1);padding:3rem 0;background:#07070a;">
+  <div class="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;font-weight:600;color:#f0ebe0;">AI<span style="color:#c9a84c;">Pro</span></div>
+    <div class="flex gap-8">
+      <a href="#curriculum" class="body-text text-cream-muted hover:text-cream" style="font-size:0.875rem;text-decoration:none;transition:color 0.3s;">Curriculum</a>
+      <a href="#pricing"    class="body-text text-cream-muted hover:text-cream" style="font-size:0.875rem;text-decoration:none;transition:color 0.3s;">Pricing</a>
+      <a href="#faq"        class="body-text text-cream-muted hover:text-cream" style="font-size:0.875rem;text-decoration:none;transition:color 0.3s;">FAQ</a>
+    </div>
+    <div class="body-text" style="color:#c4bfb4;font-size:0.7rem;">&copy; 2026 AI for Professionals. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+  // Wait for GSAP to be available
+  (function waitForGSAP() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      setTimeout(waitForGSAP, 50);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+
+    // Adoption curve draw animation
+    const curve = document.getElementById('adoption-curve');
+    if (curve) {
+      const len = curve.getTotalLength();
+      curve.style.strokeDasharray = len;
+      curve.style.strokeDashoffset = len;
+      gsap.to(curve, {
+        strokeDashoffset: 0,
+        duration: 1.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#adoption-curve-container',
+          start: 'top 75%',
+          toggleActions: 'play none none none'
+        },
+        onComplete: function() {
+          gsap.to('.curve-point', { opacity: 1, duration: 0.4, stagger: 0.2, ease: 'power2.out' });
+          gsap.to('.curve-label', { opacity: 1, duration: 0.4, stagger: 0.2, delay: 0.1, ease: 'power2.out' });
+          gsap.to('#you-are-here', { opacity: 1, duration: 0.6, delay: 0.6, ease: 'power2.out' });
+          gsap.to('#zone-labels',  { opacity: 1, duration: 0.5, delay: 0.9, ease: 'power2.out' });
+        }
+      });
+    }
+
+    // Parallax orbs
+    gsap.utils.toArray('.orb').forEach(orb => {
+      gsap.to(orb, {
+        y: () => Math.random() * 100 - 50,
+        x: () => Math.random() * 60 - 30,
+        scrollTrigger: {
+          trigger: orb.parentElement,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 2
+        }
+      });
+    });
+  })();
+
+  // Countdown timer — June 3, 2026 9:00 AM
+  (function() {
+    const target = new Date('2026-06-03T09:00:00').getTime();
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      const diff = Math.max(0, target - Date.now());
+      const el = (id) => document.getElementById(id);
+      if (el('cd-days')) {
+        el('cd-days').textContent  = pad(Math.floor(diff / 86400000));
+        el('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        el('cd-mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+        el('cd-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+      }
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+
+<!-- ====================== BODY-CODE-END ======================-->
