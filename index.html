@@ -290,21 +290,6 @@
 </head>
 <body>
 
-  <!-- ===== NAVIGATION ===== -->
-  <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" id="navbar">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
-      <a href="https://onegiantleap.ai/" class="font-display text-2xl font-semibold tracking-tight text-cream hover:text-accent transition-colors duration-300">
-        AI<span class="text-accent">Pro</span>
-      </a>
-      <div class="hidden md:flex items-center gap-10">
-        <a href="#curriculum" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Curriculum</a>
-        <a href="#results" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Results</a>
-        <a href="#pricing" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">Pricing</a>
-        <a href="#faq" class="font-body text-sm text-cream-muted hover:text-cream transition-colors duration-300 tracking-wide">FAQ</a>
-      </div>
-      <a href="#pricing" class="btn-primary text-xs py-3 px-6 tracking-widest">View Pricing</a>
-    </div>
-  </nav>
 
   <!-- ===== HERO ===== -->
   <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
@@ -1008,20 +993,6 @@
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    // Navbar background on scroll
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 80) {
-        navbar.style.background = 'rgba(7,7,10,0.95)';
-        navbar.style.backdropFilter = 'blur(8px)';
-        navbar.style.webkitBackdropFilter = 'blur(8px)';
-        navbar.style.borderBottom = '1px solid rgba(201,168,76,0.08)';
-      } else {
-        navbar.style.background = 'transparent';
-        navbar.style.backdropFilter = 'none';
-        navbar.style.webkitBackdropFilter = 'none';
-        navbar.style.borderBottom = 'none';
-      }
     });
 
     // Countdown timer — June 3, 2026 9:00 AM local time
